@@ -1,0 +1,133 @@
+{
+  "_meta": {
+    "rulesVersion": "2026.06",
+    "taxYear": 2026,
+    "lastReviewedAt": "2026-08-04",
+    "sources": [
+      "국세청 2026 소득세율 (소득세법 제55조)",
+      "국민연금공단 2026년도 기준소득월액 상·하한액",
+      "건강보험공단 2026년 보험료율 고시",
+      "고용노동부 2026 고용보험료율",
+      "삼성전자 사업보고서 기반 추정 (비공식)",
+      "2026-08-04 재검증: 건보 근로자 3.595%(총 7.19%)·장기요양 소득대비 0.9448%·고용 0.9%·국민연금 상한 월 659만(7월 인상분) 전부 고시와 일치"
+    ],
+    "disclaimer": "본 상수는 공개 자료 기반 추정값이며 실제 지급액과 다를 수 있습니다."
+  },
+  "tax": {
+    "brackets": [
+      {
+        "upTo": 1400,
+        "rate": 0.066
+      },
+      {
+        "upTo": 5000,
+        "rate": 0.165
+      },
+      {
+        "upTo": 8800,
+        "rate": 0.264
+      },
+      {
+        "upTo": 15000,
+        "rate": 0.385
+      },
+      {
+        "upTo": 30000,
+        "rate": 0.418
+      },
+      {
+        "upTo": 50000,
+        "rate": 0.44
+      },
+      {
+        "upTo": 100000,
+        "rate": 0.462
+      },
+      {
+        "upTo": null,
+        "rate": 0.495
+      }
+    ],
+    "earnedIncomeDeductionCap": 2000,
+    "basicDeduction": 150
+  },
+  "socialInsurance": {
+    "healthCombined": 0.040674,
+    "healthOnly": 0.03595,
+    "ltcOfHealth": 0.1314,
+    "nps": 0.0475,
+    "npsCap": 7908,
+    "employment": 0.009
+  },
+  "psu": {
+    "rules": [
+      {
+        "threshold": 0,
+        "multiplier": 0
+      },
+      {
+        "threshold": 20,
+        "multiplier": 0.5
+      },
+      {
+        "threshold": 40,
+        "multiplier": 1
+      },
+      {
+        "threshold": 60,
+        "multiplier": 1.3
+      },
+      {
+        "threshold": 80,
+        "multiplier": 1.7
+      },
+      {
+        "threshold": 100,
+        "multiplier": 2
+      }
+    ]
+  },
+  "samsung": {
+    "opiPoolRate": 0.1,
+    "spPoolRate": 0.105,
+    "divSplit": 0.4,
+    "bizSplit": 0.6,
+    "comWeight": 0.7,
+    "sangsaengRate": 0.003,
+    "sangsaengHurdle": 10000
+  },
+  "hynix": {
+    "psPoolRate": 0.1,
+    "_psPoolCircularWhy": "하이닉스는 공시 영업이익이 '성과급 재원 차감 전' 값이라, 재원을 그 10%로 잡으면 과대 계산된다. 실제로는 재원 자체가 영업이익에서 빠지므로 순환식이다: R = (OP − R) × 10% → R = OP × 10% / 1.1 = OP/11 ≈ 9.09%. 작년 지급 때 '10%라더니 9%였다'는 논란이 난 것이 이 구조의 증거다 — 공시가 이미 차감 후였다면 공시×10%가 정확히 맞아떨어져 논란이 날 이유가 없다. 삼성은 반대로 공시가 지출 후 값이라 이 보정이 필요 없다. false로 두면 종전대로 단순 10%.",
+    "psPoolCircular": true,
+    "psDeferRatio": 0.2,
+    "psPayout2026": {
+      "_comment": "2026 임단협 잠정합의(2026-08-20 보도) — 대의원 투표 전이라 status는 tentative. 핵심: 당해:이연 = 80:20과 이연 분할(1년 10%+2년 10%)은 기존과 '동일'하고 지급 수단만 현금→일부 자사주로 바뀐다. 그래서 psDeferRatio·cashflow의 carry 로직은 그대로 유효하다. 가결되면 status를 ratified로 바꾸고 ratifiedAt을 채운다.",
+      "status": "tentative",
+      "effectiveFromYear": 2026,
+      "cashRatio": 0.4,
+      "stockCurrentRatio": 0.4,
+      "stockDeferredRatio": 0.2,
+      "deferredTranches": [
+        { "afterYears": 1, "ratio": 0.1 },
+        { "afterYears": 2, "ratio": 0.1 }
+      ],
+      "sellable": "당해 자사주분·이연 자사주분 모두 지급 즉시 매도 가능",
+      "unconfirmed": [
+        "하방보호(지급 후 첫날 종가 기준 부족분 현금 보전) 적용 여부·범위",
+        "주식 수량 산정 기준가(1월 발표일·2월 현금지급일·4월 주식지급일 중 최저 여부)",
+        "이연분 수량확정형/금액확정형 선택 옵션의 존재 여부",
+        "자사주분 원천징수 시점 안내"
+      ],
+      "source": "이코노미스트 2026-08-20 '성과급 60% 자사주 지급 잠정 합의' / SBS / 파이낸셜뉴스"
+    }
+  },
+  "minimumWage": {
+    "_comment": "최저임금 — 실업급여 하한(시급×80%×8h) 등 파생값의 단일 출처. 연도별로 두고 계산 시점에 맞는 값을 고른다.",
+    "byYear": {
+      "2026": 10320,
+      "2027": 10700
+    },
+    "source": "최저임금위원회 의결(2027년분: 2026-07-14 제14차 전원회의)"
+  }
+}

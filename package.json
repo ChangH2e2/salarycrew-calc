@@ -1,0 +1,13 @@
+{
+  "name": "salarycrew-calc",
+  "version": "1.0.0",
+  "description": "삼성전자·SK하이닉스·삼성전기 성과급 계산 코어 — salarycrew.com이 실제로 쓰는 순수 함수",
+  "type": "module",
+  "license": "MIT",
+  "homepage": "https://salarycrew.com",
+  "repository": { "type": "git", "url": "git+https://github.com/ChangH2e2/salarycrew-calc.git" },
+  "scripts": {
+    "test": "node --test tests/*.test.mjs"
+  },
+  "keywords": ["성과급", "OPI", "TAI", "PSU", "PS", "PI", "삼성전자", "SK하이닉스", "calculator"]
+}
