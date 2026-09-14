@@ -17,6 +17,11 @@ export const TAX_BRACKETS = C.tax.brackets.map(b => ({
 export const HEALTH_RATE      = C.socialInsurance.healthCombined;
 export const HEALTH_ONLY_RATE = C.socialInsurance.healthOnly;
 export const LTC_OF_HEALTH    = C.socialInsurance.ltcOfHealth;
+// 보수월액보험료 월 상·하한(만원, 노사 합산 기준) — 예전엔 core/calc/health.ts에 리터럴로
+// 박혀 있었다. 매년 갱신되는 값인데 calc-constants.json 밖에 있으면 taxYear·lastReviewedAt
+// 갱신 때 같이 안 바뀔 수 있다(2026-09-14 외부 리뷰, ChatGPT GPT-6 Astra).
+export const HEALTH_TOTAL_CAP_MAN   = C.socialInsurance.healthTotalCapMan;
+export const HEALTH_TOTAL_FLOOR_MAN = C.socialInsurance.healthTotalFloorMan;
 export const EMP_RATE    = C.socialInsurance.employment;
 export const NPS_RATE    = C.socialInsurance.nps;
 export const NPS_CAP_YR  = C.socialInsurance.npsCap;

@@ -55,6 +55,8 @@
     "healthCombined": 0.040674,
     "healthOnly": 0.03595,
     "ltcOfHealth": 0.1314,
+    "healthTotalCapMan": 918.348,
+    "healthTotalFloorMan": 2.016,
     "nps": 0.0475,
     "npsCap": 7908,
     "employment": 0.009
