@@ -61,9 +61,10 @@ export const HYNIX_POOL_EFF_RATE = HYNIX_RULES.psPoolCircular
   ? HYNIX_RULES.psPoolRate / (1 + HYNIX_RULES.psPoolRate)
   : HYNIX_RULES.psPoolRate;
 
-// 2026 임단협 잠정합의 — PS 지급 '수단' 분해(현금/자사주). 비율 자체는 기존과 같다:
-// 당해 80%(현금 40 + 자사주 40) + 이연 20%(1년 10 + 2년 10)이라 psDeferRatio는 그대로 유효하고
+// 2026 임단협 수정 잠정합의(2026-09-10) — PS 지급 '수단' 분해(현금/자사주). 비율 자체는 기존과 같다:
+// 당해 80%(현금 50 + 자사주 30) + 이연 20%(1년 10 + 2년 10)이라 psDeferRatio는 그대로 유효하고
 // 세후 총액도 변하지 않는다(즉시매도 가정). 바뀌는 건 '무엇으로 받느냐'와 주가 노출뿐.
+// 1차안(현금 40 + 자사주 60)은 2026-08-25 투표에서 25표 차로 부결됐다 — 재투표는 9/15~16.
 export const HYNIX_PAYOUT_2026 = Object.freeze(C.hynix.psPayout2026 || null);
 
 export const PSU_RULES = C.psu.rules;

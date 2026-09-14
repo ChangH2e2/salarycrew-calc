@@ -6,7 +6,7 @@
 // 같은 관계가 **구성으로** 성립하고, tests/hynix-result-view.test.mjs가 그걸 잰다.
 //
 // 경계(CLAUDE.md §10): derive(calc-bridge.calcHynix · cashflow.buildHynixAccumRows)의 결과를 재배열·합산·대조만 한다.
-// 지급 규칙(80:20 · 현금 40/자사주 40 · 이연 10+10)은 여기서 새로 판단하지 않는다 — psPayoutPlan과 cashflow의 몫이다.
+// 지급 규칙(80:20 · 현금 50/자사주 30 · 이연 10+10)은 여기서 새로 판단하지 않는다 — psPayoutPlan과 cashflow의 몫이다.
 // 이 파일에 0.4나 0.8 같은 제도 상수가 나타나면 잘못 들어온 것이다.
 //
 // 기준: 히어로·표는 **소득세 기준**(4대보험 별도) — 삼성 뷰 모델의 opiPost·spPost와 같은 기준이라 두 회사가 같은 자로 잰다.

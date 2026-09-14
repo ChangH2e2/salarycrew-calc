@@ -31,9 +31,9 @@ export interface HynixInputs {
 export interface HynixPayoutPlan {
   status: 'tentative' | 'ratified' | string;
   effectiveFromYear: number;
-  cashRatio: number;            // 당해 현금 (0.4)
-  stockCurrentRatio: number;    // 당해 자사주 (0.4)
-  stockDeferredRatio: number;   // 이연 자사주 (0.2)
+  cashRatio: number;            // 당해 현금 (0.5)
+  stockCurrentRatio: number;    // 당해 자사주 (0.3)
+  stockDeferredRatio: number;   // 이연 자사주 (0.2) — 셋을 더하면 1, 주식 몫 합계는 0.5
   deferredTranches: { afterYears: number; ratio: number }[];
 }
 

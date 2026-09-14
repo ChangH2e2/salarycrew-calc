@@ -12,11 +12,12 @@ import { buildHynixResultView } from '../src-react/core/bonus/hynix/result-view.
 // **기본값 골든**이다 — 인자 없이 부르므로 '지금 기본값이 무엇을 내는가'를 적어 두는 것이 이 테스트의 일이다.
 // 그래서 운영값(CMS)이 바뀌면 **기대값을 옮긴다**(입력 고정이 아니다 — `0f6b454f`의 분류).
 // 2026-09-11: 메모리 2026년 영업이익이 CMS에서 300 → 350조가 되며 삼성 9,558 → 10,728 · 2.28 → 2.03배.
-test('골든: 기본값(5,600만 · 2026 · 삼성 메모리 350 / 하이닉스 256) — 삼성 10,728 · 하이닉스 21,779 · 2.03배', () => {
+// 2026-09-14: 하이닉스 임단협 수정 잠정합의(현금 40→50 · 당해 자사주 40→30)의 반올림으로 21,779 → 21,778(세전 35,606은 그대로).
+test('골든: 기본값(5,600만 · 2026 · 삼성 메모리 350 / 하이닉스 256) — 삼성 10,728 · 하이닉스 21,778 · 2.03배', () => {
   const v = buildCompareTwoView();
   assert.equal(v.salary, 5600);
   assert.equal(v.samsung.received, 10728);         // samsung-result-view 골든 cashableNow
-  assert.equal(v.hynix.received, 21779);           // hynix-result-view 골든 hero.total
+  assert.equal(v.hynix.received, 21778);           // hynix-result-view 골든 hero.total
   assert.equal(v.winner, 'hynix');
   assert.equal(v.ratio, 2.03);
   assert.equal(v.samsung.opT, 348);   // 메모리 350 + 파운드리 −1.5 + S.LSI −0.5
