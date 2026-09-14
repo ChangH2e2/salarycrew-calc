@@ -1,6 +1,6 @@
 // cashflow.js — 삼성·하이닉스 다년도 누적 수령액·이연 계산 순수 함수.
 // AccumTable / HynixAccumTable의 계산 로직을 UI에서 분리해 테스트 가능하게 한다.
-import { calcSamsungOneDeptYear, splitShares3Y, calcHynix, bonusTaxDeducted, EMP_RATE, HEALTH_RATE } from './calc-bridge.js';
+import { calcSamsungOneDeptYear, splitShares3Y, calcHynix, bonusTaxDeducted, EMP_RATE, HEALTH_RATE, HYNIX_RULES } from './calc-bridge.js';
 import { getGradeMul } from './grades.js';
 import { getActiveSamsungYears, getYearGrade, getYearOps, getYearSalaryInput, getWorkBonusForYear, getWorkMonths } from './samsung-derive.js';
 import { getActiveHynixYears, hynixOpKey, getHynixWorkMonths } from './hynix-derive.js';
@@ -66,8 +66,13 @@ export function buildSamsungAccumRows({ inputs, selectedDept, growthInput, stock
 
 // 하이닉스 이연 잔여(연말 미지급 스냅샷): 당해 PS 20% + 전년 PS 10%
 export function hynixRemainingDeferred(psRows, idx) {
-  const currentRemain = (psRows[idx] || 0) * 0.2;
-  const prevRemain    = idx >= 1 ? (psRows[idx - 1] || 0) * 0.1 : 0;
+  // **비율은 calc-constants 하나에서 온다.** 2026-09-15까지 0.2·0.1이 여기 손으로 박혀 있었고,
+  // 수정 잠정합의안이 이연을 없앴을 때(psDeferRatio 0.2 → 0) 이 함수만 옛 규칙으로 남아
+  // 같은 화면의 두 숫자가 어긋났다 — §10 "*-view는 지급 규칙을 새로 판단하지 않는다"의 형제다.
+  const defer = HYNIX_RULES.psDeferRatio;
+  if (!(defer > 0)) return 0;
+  const currentRemain = (psRows[idx] || 0) * defer;
+  const prevRemain    = idx >= 1 ? (psRows[idx - 1] || 0) * (defer / 2) : 0;
   return Math.max(0, currentRemain + prevRemain);
 }
 
@@ -94,8 +99,12 @@ export function buildHynixAccumRows({ inputs, growthInput }) {
 
   const psRows = baseRows.map(row => row.psMan || 0);
   baseRows.forEach((row, idx) => {
-    const carryPaid    = (idx >= 1 ? psRows[idx - 1] * 0.1 : 0) + (idx >= 2 ? psRows[idx - 2] * 0.1 : 0);
-    const paidPsGross  = row.psMan * 0.8 + carryPaid;
+    // 이연 분할(1년·2년 뒤 각 defer/2)과 당해 비율(1 − defer) — 둘 다 상수에서 파생한다.
+    // 이연이 0이면 carryPaid도 0이고 당해가 100%다(2026-09-10 수정 잠정합의).
+    const defer = HYNIX_RULES.psDeferRatio;
+    const tranche = defer / 2;
+    const carryPaid    = defer > 0 ? ((idx >= 1 ? psRows[idx - 1] * tranche : 0) + (idx >= 2 ? psRows[idx - 2] * tranche : 0)) : 0;
+    const paidPsGross  = row.psMan * (1 - defer) + carryPaid;
     const paidPiGross  = row.piMan;
     const paidGross    = paidPsGross + paidPiGross;
     // 빈 값(null)만 자동세율, 명시적 0도 유효한 수동세율로 처리 — calc-bridge.js와 동일 기준

@@ -2,7 +2,8 @@
 //
 // 값 하나가 맞는 테스트 + **값끼리의 관계**가 맞는 테스트(설계 2026-09-07 §4). 골든값은 계산기가 정본이다 —
 // 시안 HynixResult의 숫자(10,162 · 560 · 9,838)는 다른 세율·주가를 가정한 조판용 값이라 그대로 쓰지 않는다
-// (계산기: PS 현금 13,397 · PI 343 · PS 자사주 8,038 · 소계 21,778 — calc-bridge 골든 psMan 43,807 · net 20,009과 같은 뿌리).
+// (계산기: PS 현금 13,174 · PI 337 · PS 주식 13,174 · 소계 26,685 — calc-bridge 골든 psMan 43,807 · net 24,480과 같은 뿌리).
+// 2026-09-15: 수정 잠정합의안이 이연을 없애(전액 당해) 세후가 21,778 → 26,685가 됐다.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { HYNIX_DEFAULTS, calcHynixResult, getActiveHynixYears } from '../src-react/core/bonus/hynix/derive.ts';
@@ -20,19 +21,19 @@ test('골든: 기본값(2026 · 5,600만 · OP 256조 · 평균 8,500만 · 35,0
   assert.equal(v.condition.opT, 256);
   assert.equal(v.condition.year, 2026);
   assert.deepEqual(v.condition.years, [2026, 2027, 2028, 2029, 2030]);   // 기본 5개년(2026-09-10)
-  assert.equal(v.hero.psCash, 13397);
-  assert.equal(v.hero.pi, 343);
-  assert.equal(v.hero.psStock, 8038);
+  assert.equal(v.hero.psCash, 13174);
+  assert.equal(v.hero.pi, 337);
+  assert.equal(v.hero.psStock, 13174);
   assert.equal(v.hero.carryIn, 0);
-  assert.equal(v.hero.total, 21778);
-  assert.equal(v.hero.deferredPre, 8761);          // calc-bridge 골든 psDefer
+  assert.equal(v.hero.total, 26685);
+  assert.equal(v.hero.deferredPre, 0);             // 이연 없음(2026-09-10 수정안)
   assert.equal(v.hero.sharesNow, null);            // 주가 미입력 — 주식 수는 계산하지 않는다(§2)
   assert.equal(v.formula.ps.pre, 43807);           // calc-bridge 골든 psMan
   assert.equal(v.formula.pi.pre, 560);
-  assert.equal(v.formula.deduct.net, 20009);       // calc-bridge 골든 net
+  assert.equal(v.formula.deduct.net, 24480);       // calc-bridge 골든 net
   assert.equal(Math.round(v.formula.pool.effRate * 10000) / 100, 9.09);
   assert.equal(v.formula.split.cashRatio, 0.5);
-  assert.equal(v.formula.split.stockRatio, 0.3);
+  assert.equal(v.formula.split.stockRatio, 0.5);
   assert.equal(v.plan?.status, 'tentative');
   assert.equal(v.threeYear.opNext, 380);
 });
@@ -47,7 +48,7 @@ test('항등식: 히어로 = PS 현금 + PI + PS 자사주 (+ 이연 유입 0) �
   }
 });
 
-test('항등식: 3개년 첫 행 = 히어로 · 행마다 소계 = 네 토막의 합 · 누적 = 행의 합 · 둘째 해부터 이연 유입 > 0', () => {
+test('항등식: 3개년 첫 행 = 히어로 · 행마다 소계 = 네 토막의 합 · 누적 = 행의 합 · 이연 유입 0', () => {
   const v = view();
   const [r0] = v.threeYear.rows;
   assert.equal(r0.year, v.condition.year);
@@ -59,9 +60,11 @@ test('항등식: 3개년 첫 행 = 히어로 · 행마다 소계 = 네 토막의
   const t = v.threeYear.totals;
   const sum = (k) => v.threeYear.rows.reduce((a, r) => a + r[k], 0);
   for (const k of ['psCash', 'pi', 'psStock', 'carryIn', 'total']) assert.equal(t[k], sum(k), k);
-  assert.equal(v.threeYear.rows[0].carryIn, 0);
-  assert.ok(v.threeYear.rows[1].carryIn > 0);
-  assert.ok(v.threeYear.rows[2].carryIn > v.threeYear.rows[1].carryIn);   // 전년 10% + 전전년 10%
+  // 2026-09-15: 수정 잠정합의안(2026-09-10)이 이연을 없애 **모든 해의 carryIn이 0**이다.
+  // 전에는 '둘째 해부터 > 0, 셋째 해가 더 큼(전년 10 + 전전년 10)'을 재던 자리다.
+  // **0을 재는 단언을 남겨 둔다** — 이연이 되살아나면(가결 후 공지가 다르면) 여기가 먼저 깨진다.
+  for (const r of v.threeYear.rows) assert.equal(r.carryIn, 0, `carryIn ${r.year}`);
+  assert.equal(v.threeYear.totals.carryIn, 0);
   assert.equal(v.threeYear.rows.length, getActiveHynixYears(HYNIX_DEFAULTS).length);
 });
 
