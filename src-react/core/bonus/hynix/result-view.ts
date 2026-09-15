@@ -111,7 +111,8 @@ export function heroTotal(inputs: HynixInputs, results: HynixResult = calcHynixR
 
 /** calcHynix 결과 하나를 첫해 행처럼 본다 — cashflow 첫 행과 같은 정의(이연 유입 0) */
 export function heroParts(r: HynixResult, pre = false): PaidParts {
-  const incomeTax = r.deductDetail.incomeTax;
+  // 반올림 전 값을 쓴다 — cashflow 첫 행이 같은 정의로 세후 비율을 만들기 때문(항등식)
+  const incomeTax = r.incomeTaxRaw ?? r.deductDetail.incomeTax;
   return splitPaid({
     psMan: r.psMan, piMan: r.piMan, psCashMan: r.psCashMan, psStockMan: r.psStockMan, psPayoutPlan: r.psPayoutPlan,
     paidPsGross: r.psCashMan + r.psStockMan, paidGross: r.currentGross,

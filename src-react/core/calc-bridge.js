@@ -53,10 +53,14 @@ export const HYNIX_RULES = Object.freeze({
   psDeferRatio:   C.hynix.psDeferRatio,
 });
 
-// PS 재원 실효율 — 하이닉스 공시 영업이익은 성과급 재원을 빼기 '전' 값이라
-// 단순히 10%를 곱하면 과대 계산된다. 재원 자체가 영업이익에서 차감되므로 순환식이다:
-//   R = (OP − R) × r  →  R = OP × r / (1 + r)
-// r = 10%면 OP/11 ≈ 9.0909%. 자세한 근거는 calc-constants.json의 _psPoolCircularWhy.
+// PS 재원 실효율 — R = (OP − R) × r → OP × r / (1 + r). r = 10%면 OP/11 ≈ 9.0909%.
+// **사용자 결정(2026-09-15)**: 실지급 실적 대비 비율을 근거로 9.09%를 유지한다.
+// 주의 — 이 식을 '공시가 재원 차감 전이라서'로 읽지 마라. 그 전제는 2026-09-15 DART 대조로
+// 성립하지 않는 것이 확인됐다(공시 영업이익은 이미 차감 후다. 근거 3종은 _psPoolCircularWhy).
+// 이 식은 **실측 지급 비율을 맞추는 수단**이다. 실측은 2025년 실적분 4.5조/47.21조 = 9.53%였고,
+// 그 차이의 사유는 솔리다임 영업이익 제외였다(2025년 실적분이 마지막).
+// 재판정 방아쇠 둘: ① 솔리다임 제외 종료 ② 애드백 가결 시 R = (OP + R) × r → OP/9 = 11.11%
+// (지금과 반대 방향). 9/15~16 총투표 대기 — 확정 전이라 넣지 않는다(§12-E).
 export const HYNIX_POOL_EFF_RATE = HYNIX_RULES.psPoolCircular
   ? HYNIX_RULES.psPoolRate / (1 + HYNIX_RULES.psPoolRate)
   : HYNIX_RULES.psPoolRate;
@@ -234,6 +238,10 @@ export function calcHynix(p) {
     deduct,
     net,
     effRate,
+    // 반올림 전 소득세 — 히어로의 네 토막 배분(result-view.splitPaid)은 이 값을 쓴다.
+    // deductDetail.incomeTax는 표시용 반올림값이라, 그걸로 비율 k를 만들면 cashflow 첫 행과
+    // 토막이 1만원씩 어긋난다(2026-09-15 항등식 테스트가 잡았다).
+    incomeTaxRaw: taxAmt,
     deductDetail: {
       incomeTax: Math.round(taxAmt),
       health: Math.round(health),

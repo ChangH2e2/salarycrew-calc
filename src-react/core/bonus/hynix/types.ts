@@ -51,5 +51,6 @@ export interface HynixResult {
   psPayoutPlan: HynixPayoutPlan | null;
   currentGross: number;    // 당해 지급 세전 = psMan × 0.8 + piMan
   deduct: number; net: number; effRate: number;   // effRate는 4대보험 포함 %(0~100) — 옛 계약
+  incomeTaxRaw?: number;   // 반올림 전 소득세 — 토막 배분 전용(표시는 deductDetail.incomeTax)
   deductDetail: { incomeTax: number; health: number; emp: number; total: number };
 }
